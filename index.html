@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <style>
+    * { margin: 0; padding: 0; }
+    body {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      min-height: 100vh;
+      background: #000;
+    }
+    .slideshow {
+      position: relative;
+      width: 90vw;
+      max-width: 1200px;
+      aspect-ratio: 16/9;
+      overflow: hidden;
+      border-radius: 8px;
+    }
+    .slideshow img {
+      position: absolute;
+      inset: 0;
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      opacity: 0;
+      transition: opacity 0.6s ease;
+    }
+    .slideshow img.active { opacity: 1; }
+
+    .arrow {
+      position: absolute;
+      top: 50%;
+      transform: translateY(-50%);
+      background: rgba(0,0,0,0.5);
+      color: #fff;
+      border: none;
+      font-size: 2rem;
+      padding: 0.5rem 1rem;
+      cursor: pointer;
+      border-radius: 4px;
+      z-index: 10;
+      transition: background 0.3s;
+    }
+    .arrow:hover { background: rgba(0,0,0,0.8); }
+    .arrow.prev { left: 12px; }
+    .arrow.next { right: 12px; }
+
+    .dots {
+      position: absolute;
+      bottom: 12px;
+      left: 50%;
+      transform: translateX(-50%);
+      display: flex;
+      gap: 8px;
+      z-index: 10;
+    }
+    .dot {
+      width: 10px; height: 10px;
+      border-radius: 50%;
+      background: rgba(255,255,255,0.4);
+      cursor: pointer;
+      transition: background 0.3s;
+    }
+    .dot.active { background: #fff; }
+  </style>
+</head>
+<body>
+  <div class="slideshow">
+    <img src="photo1.jpg" class="active">
+    <img src="photo2.jpg">
+    <img src="photo3.jpg">
+
+    <button class="arrow prev">‹</button>
+    <button class="arrow next">›</button>
+
+    <div class="dots">
+      <span class="dot active"></span>
+      <span class="dot"></span>
+      <span class="dot"></span>
+    </div>
+  </div>
+
+  <script>
+    const slides = document.querySelectorAll('.slideshow img');
+    const dots   = document.querySelectorAll('.dot');
+    let i = 0;
+
+    function show(n) {
+      if (n < 0 || n >= slides.length) return;
+      slides[i].classList.remove('active');
+      dots[i].classList.remove('active');
+      i = n;
+      slides[i].classList.add('active');
+      dots[i].classList.add('active');
+      updateArrows();
+    }
+
+    function updateArrows() {
+      document.querySelector('.prev').style.visibility = i === 0 ? 'hidden' : 'visible';
+      document.querySelector('.next').style.visibility = i === slides.length - 1 ? 'hidden' : 'visible';
+    }
+
+    document.querySelector('.prev').onclick = () => show(i - 1);
+    document.querySelector('.next').onclick = () => show(i + 1);
+    dots.forEach((d, idx) => d.onclick = () => show(idx));
+
+    document.addEventListener('keydown', e => {
+      if (e.key === 'ArrowLeft')  show(i - 1);
+      if (e.key === 'ArrowRight') show(i + 1);
+    });
+
+    updateArrows();
+  </script>
+</body>
+</html>
